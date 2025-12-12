@@ -74,3 +74,71 @@ prueba.ipynb
 Hacé clic para abrirlo.
 
 Ejecutá las celdas con Shift + Enter.
+
+# CONEXION A LA BASES DE DATOS POSTGRESQL
+
+## 2️⃣ Instalar el conector de Postgres en tu venv
+
+En tu proyecto (con el venv activado):
+
+```bash
+python -m pip install psycopg2-binary sqlalchemy
+```
+
+## ✅ 1. Crear tu archivo .env
+
+En la raíz de tu proyecto (donde está requirements.txt), creá un archivo:
+
+```bash
+.env
+```
+
+Dentro poné tus variables (sin comillas):
+
+```bash
+DB_USER=postgres
+DB_PASSWORD=tu_password_real
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=northwind
+```
+
+## ✅ 2. Instalar la librería para leer .env
+
+Dentro de tu entorno virtual:
+
+```bash
+pip install python-dotenv
+```
+
+Esto permite cargar las variables en Python usando load_dotenv().
+
+## ✅ 3. Usar el .env dentro de tu archivo de conexión
+
+En tu Jupyter Notebook o archivo .py:  
+archivo: conexion_bd.ipynb
+
+```bash
+import os
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+import pandas as pd
+
+# Cargar variables del archivo .env
+load_dotenv()
+
+usuario = os.getenv("DB_USER")
+password = os.getenv("DB_PASSWORD")
+host = os.getenv("DB_HOST")
+puerto = os.getenv("DB_PORT")
+base = os.getenv("DB_NAME")
+
+# Crear el engine
+url = f"postgresql+psycopg2://{usuario}:{password}@{host}:{puerto}/{base}"
+engine = create_engine(url)
+
+# Probar conexión
+df = pd.read_sql("SELECT * FROM public.customers LIMIT 5;", engine)
+df
+
+```
